@@ -2,11 +2,9 @@
 
 # About
 
-ffi_bitcask.lua was a Key/Value database for LuaJIT, depends on lfs and crc32.
+ffi_bitcask.lua was a Key/Value store for LuaJIT, uses [Bitcask](https://en.wikipedia.org/wiki/Bitcask)  on-disk layout, pure LuaJIT code depends on lfs and crc32.
 
-only test in MacOS.
-
-
+only test in MacOS/Linux.
 
 # Example
 
@@ -47,5 +45,14 @@ end
 
 -- db:closedb() -- no close
 
+```
+
+# Test
+
+```bash
+$ luajit test/test_bitcask.lua
+PASS Set/Get
+PASS Delete
+PASS GC
 ```
 

@@ -32,32 +32,58 @@ end
 db:changeBucket("0")
 
 local count = 256
+local value = "abcdefghijklmnopqrstuvwxyz"
 
 for i = 1, count, 1 do
-    db:set(tostring(i), "abcdefghijklmnopqrstuvwxyz")
+    db:set(tostring(i), value)
 end
 
+local has_invalid = false
 for i = 1, count, 1 do
-    if db:get(tostring(i)) ~= "abcdefghijklmnopqrstuvwxyz" then
-        print("invalid get ", i)
+    if db:get(tostring(i)) ~= value then
+        print("Invalid get ", i)
+        has_invalid = true
     end
+end
+
+if not has_invalid then
+    print("PASS Set/Get")
 end
 
 for i = 1, count, 2 do
     db:remove(tostring(i))
 end
 
+has_invalid = false
 for i = 1, count, 2 do
     if db:get(tostring(i)) then
-        print("failed to delete ", i)
+        has_invalid = true
+        print("Failed to delete ", i)
     end
+end
+
+if not has_invalid then
+    print("PASS Delete")
 end
 
 db:gc("0")
 
-for i = 1, count, 2 do
-    if db:get(tostring(i)) then
-        print("2 failed to delete ", i)
+has_invalid = false
+for i = 1, count, 1 do
+    if i % 2 == 1 then
+        if db:get(tostring(i)) then
+            has_invalid = true
+            print("GC failed to delete ", i)
+        end
+    else
+        if db:get(tostring(i)) ~= value then
+            has_invalid = true
+            print("GC failed to get ", i)
+        end
     end
+end
+
+if not has_invalid then
+    print("PASS GC")
 end
 
