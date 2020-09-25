@@ -288,9 +288,9 @@ function _M.opendb(config)
 end
 
 --[[
-    list bucket names
+    list all bucket names
 ]]
-function _M:buckets()
+function _M:allBuckets()
     local tbl = {}
     for name, _ in pairs(self._buckets) do
         tbl[#tbl + 1] = name
@@ -310,6 +310,17 @@ function _M:changeBucket(name)
     end
     self._bucket_name = name
     return true
+end
+
+--[[
+    list all key names
+]]
+function _M:allKeys()
+    local tbl = {}
+    for name, _ in pairs(self._kinfo) do
+        tbl[#tbl + 1] = name
+    end
+    return tbl
 end
 
 --[[
