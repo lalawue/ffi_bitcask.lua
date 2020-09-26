@@ -31,6 +31,12 @@ end
 --
 db:changeBucket("0")
 
+if db:get("a") then
+    print("Invalid bucket namespace")
+else
+    print("PASS Bucket")
+end
+
 local count = 256
 local value = "abcdefghijklmnopqrstuvwxyz"
 
@@ -43,6 +49,7 @@ for i = 1, count, 1 do
     if db:get(tostring(i)) ~= value then
         print("Invalid get ", i)
         has_invalid = true
+        break
     end
 end
 
@@ -57,8 +64,9 @@ end
 has_invalid = false
 for i = 1, count, 2 do
     if db:get(tostring(i)) then
-        has_invalid = true
         print("Failed to delete ", i)
+        has_invalid = true
+        break
     end
 end
 
@@ -74,11 +82,13 @@ for i = 1, count, 1 do
         if db:get(tostring(i)) then
             has_invalid = true
             print("GC failed to delete ", i)
+            break
         end
     else
         if db:get(tostring(i)) ~= value then
             has_invalid = true
             print("GC failed to get ", i)
+            break
         end
     end
 end
@@ -86,4 +96,3 @@ end
 if not has_invalid then
     print("PASS GC")
 end
-
