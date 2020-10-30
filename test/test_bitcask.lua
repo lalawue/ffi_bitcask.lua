@@ -75,17 +75,22 @@ if not has_invalid then
 end
 
 db:gc("0")
+db = nil
+
+-- open new database to test after gc
+collectgarbage()
+local ndb = Bitcask.opendb(config)
 
 has_invalid = false
 for i = 1, count, 1 do
     if i % 2 == 1 then
-        if db:get(tostring(i)) then
+        if ndb:get(tostring(i)) then
             has_invalid = true
             print("GC failed to delete ", i)
             break
         end
     else
-        if db:get(tostring(i)) ~= value then
+        if ndb:get(tostring(i)) ~= value then
             has_invalid = true
             print("GC failed to get ", i)
             break
