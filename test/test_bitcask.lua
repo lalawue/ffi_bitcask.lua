@@ -41,12 +41,14 @@ local count = 256
 local value = "abcdefghijklmnopqrstuvwxyz"
 
 for i = 1, count, 1 do
-    db:set(tostring(i), value)
+    local name = tostring(i)
+    db:set(name, value .. name)
 end
 
 local has_invalid = false
 for i = 1, count, 1 do
-    if db:get(tostring(i)) ~= value then
+    local name = tostring(i)
+    if db:get(name) ~= (value .. name) then
         print("Invalid get ", i)
         has_invalid = true
         break
@@ -83,14 +85,15 @@ local ndb = Bitcask.opendb(config)
 
 has_invalid = false
 for i = 1, count, 1 do
+    local name = tostring(i)
     if i % 2 == 1 then
-        if ndb:get(tostring(i)) then
+        if ndb:get(name) then
             has_invalid = true
             print("GC failed to delete ", i)
             break
         end
     else
-        if ndb:get(tostring(i)) ~= value then
+        if ndb:get(name) ~= (value .. name) then
             has_invalid = true
             print("GC failed to get ", i)
             break
